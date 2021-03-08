@@ -37,7 +37,7 @@ end_date = current_date.strftime('%d-%m')
 
 current_files = []
 
-# Read files to list first
+# Read files to list first to speed up processing.
 
 with sshtunnel.open_tunnel(
         (jh, 22),
