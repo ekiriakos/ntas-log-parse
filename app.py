@@ -65,7 +65,7 @@ with sshtunnel.open_tunnel(
     sftp.close()
 
 for kpi in current_files:
-    print("Todays files are: ", kpi)
+    print("Today's files are: ", kpi)
 
 os.chdir(local_path)
 
