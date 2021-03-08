@@ -14,7 +14,7 @@ config.read('config.ini')
 
 startTime = datetime.now()
 
-############### Configuration ###############
+############### Configuration ################
 
 priv_key = config['keys']['private_key']
 jh = config['servers']['netact_jh']
