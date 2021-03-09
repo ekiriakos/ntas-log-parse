@@ -14,7 +14,6 @@ from datetime import datetime
 #print(file_path)
 
 # TODO: Parse logs as taken from kubectl logs.
-#       Do not overwrite csv - export it to file named after original and add timestamp.
 #       Re-factor with pandas
 #       Add file browser GUI to select input.
 #       Add exported file "Save as" GUI.
