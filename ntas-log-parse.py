@@ -14,7 +14,7 @@ from datetime import datetime
 #print(file_path)
 
 # TODO: Parse logs as taken from kubectl logs.
-#       Re-factor with pandas
+#       Re-factor with pandas.
 #       Add file browser GUI to select input.
 #       Add exported file "Save as" GUI.
 #       List error levels found (error, warning, info etc.) and count of each.
@@ -46,7 +46,7 @@ def log_to_json(logfile):
     with open(logfile, "r") as lf:
         data = json.load(lf)
     return data
-
+2
 # Find number of alarms in extracted json
 def alarm_count(alarmfile):
     data = log_to_json(alarmfile)
@@ -119,9 +119,6 @@ def events_to_jsonlist(eventfile):
         # print(parsed_dict)
         parsed_list.append(parsed_dict)
 
-    #for index, item in enumerate(parsed_list):
-     #   print(index, item)
-
     column_names.remove('log')
 
     return parsed_list
@@ -130,7 +127,7 @@ def parse_events(event_list):
 
     column_names = []
     parsed_list = []
-    csv_file = "events.csv"
+    csv_file = datetime.now().strftime("%y%m%d_%H%M%S_") + input_file + ".csv"
     
     for event in event_list:
         parsed_dict = {}
@@ -148,7 +145,8 @@ def parse_events(event_list):
         #print(parsed_dict)
         parsed_list.append(parsed_dict)
 
-    with open(csv_file, 'w', newline='') as csvfile:
+    csv_out = Path('csv_logs').joinpath(csv_file)
+    with open(csv_out, 'w', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=column_names)
         writer.writeheader()
         for data in parsed_list:
