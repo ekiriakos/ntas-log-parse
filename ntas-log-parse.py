@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog
-import datetime
+from datetime import datetime
 
 #root = tk.Tk()
 #root.withdraw()
@@ -14,18 +14,18 @@ import datetime
 #print(file_path)
 
 # TODO: Parse logs as taken from kubectl logs.
-#       Do not overwrite csv - export it to file named after original.
+#       Do not overwrite csv - export it to file named after original and add timestamp.
 #       Re-factor with pandas
 #       Add file browser GUI to select input.
 #       Add exported file "Save as" GUI.
 #       List error levels found (error, warning, info etc.) and count of each.
 #       Add radio button to select desired error level and export only this to csv.
 
-############# NOTES ############
+#################### NOTES #################
 #  There are 3 types of logs and 2 formats:
 #  1. activeAlarms, alarmHistory
 #  2. event_logs
-#####################################
+############################################
 
 menu = """
 
@@ -36,7 +36,7 @@ Please select one of the following options:
 3) Save kubectl logs from infra node to CSV.
 4) Exit
 
-NOTE: Exported files must be placed in "logs" directory.
+NOTE: Exported files must be placed in "json_logs" directory.
 
 Your selection: """
 
@@ -66,8 +66,7 @@ def alarms_to_list(alarms_json):
 def parse_alarms(alarm_list):
     column_names = []
     parsed_list = []
-    #csv_file = "alarms.csv"
-    csv_file = input_file + ".csv"
+    csv_file = datetime.now().strftime("%y%m%d_%H%M%S_") + input_file + ".csv"
 
     for alarm in alarm_list:
         parsed_dict = {}
@@ -81,15 +80,11 @@ def parse_alarms(alarm_list):
                 parsed_dict[i] = k
             if i not in column_names:
                 column_names.append(i)
-        #print(parsed_dict)
         parsed_list.append(parsed_dict)
 
-    #for index, item in enumerate(parsed_list):
-    #    print(index, item)
-
     column_names.remove('alarm')
-
-    with open(csv_file, 'w', newline='') as csvfile:
+    csv_out = Path('csv_logs').joinpath(csv_file)
+    with open(csv_out, 'w', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=column_names)
         writer.writeheader()
         for data in parsed_list:
@@ -165,7 +160,7 @@ def parse_events(event_list):
     return column_names
 
 def check_file_path(filename):
-    full_path = Path.cwd().joinpath('logs', filename)
+    full_path = Path.cwd().joinpath('json_logs', filename)
     if full_path.exists():
         return full_path
     else:
@@ -181,14 +176,14 @@ while (user_input := input(menu)) != '4':
             a_list = alarms_to_list(data)
             parse_alarms(a_list)
         else:
-            print('Make sure the log file exists and is placed in the "logs" directory!')
+            print('Make sure the log file exists and is placed in the "json_logs" directory!')
     elif user_input == '2':
         input_file = input("Event logs filename: ")
         if check_file_path(input_file):
             el_json = events_to_jsonlist(check_file_path(input_file))
             parse_events(el_json)
         else:
-            print('Make sure the log file exists and is placed in the "logs" directory!')
+            print('Make sure the log file exists and is placed in the "json_logs" directory!')
     elif user_input == '3':
         pass
     else:
